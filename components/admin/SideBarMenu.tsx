@@ -109,6 +109,24 @@ export default function SideBarMenu({ cu }: { cu?: Session | null }) {
               ></ComputerDesktopIcon>
             }
           ></MenuItem>
+          {(storeAcc || isAdmin) && (
+            <MenuItem
+              onClick={() => setActiveMenu(999)}
+              selected={activeMenu === 999}
+              active={exp}
+              title="
+            بانک سوالات"
+              link="admin/questions/all"
+              icon={
+                <BanknotesIcon
+                  fontSize={20}
+                  className={`${
+                    activeMenu === 999 ? " text-orange-400" : "text-[#8b99a4]"
+                  } w-6 h-6 dark:text-white `}
+                ></BanknotesIcon>
+              }
+            ></MenuItem>
+          )}
 
           {(storeAcc || isAdmin) && (
             <MenuItem

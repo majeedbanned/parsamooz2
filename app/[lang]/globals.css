@@ -74,6 +74,11 @@
 }
 
 @layer base {
+
+  .ltr-mathjax {
+    direction: ltr;
+  }
+  
   * {
     /* @apply border-border; */
   }

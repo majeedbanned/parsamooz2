@@ -13,6 +13,84 @@ import queryString from 'query-string';
 //   const hashedQueryString = CryptoJS.AES.encrypt(queryString, 'your-secret-key').toString();
 //   return hashedQueryString;
 // }
+export function removeMathJaxHTMLContentold(htmlString: string) {
+  // Create a new DOM parser
+  var parser = new DOMParser();
+
+  // Parse the input HTML string to a DOM document
+  var doc = parser.parseFromString(htmlString, 'text/html');
+
+  // Get all elements with class 'MathJax'
+  var mathJaxElements = doc.querySelectorAll('.MathJax');
+
+  mathJaxElements.forEach(function(element) {
+    // Wrap the MathJax element in a div with a specific class
+    var wrapper = document.createElement('div');
+    wrapper.className = 'ltr-mathjax';
+    element.parentNode?.insertBefore(wrapper, element);
+    wrapper.appendChild(element);
+
+    // Remove unwanted spans and scripts
+    var spans = element.querySelectorAll('span');
+    spans.forEach(function(span) {
+      if (span.classList.contains('MathJax_Preview') || span.classList.contains('MJX_Assistive_MathML')) {
+        span.remove();
+      }
+    });
+
+    var scripts = element.querySelectorAll('script');
+    scripts.forEach(function(script) {
+      script.remove();
+    });
+  });
+
+  // Serialize the cleaned DOM document back to an HTML string
+  return doc.body.innerHTML;
+}
+
+
+export function removeMathJaxHTMLContent(htmlString:string) {
+  // Create a new DOM parser
+  var parser = new DOMParser();
+  
+  // Parse the input HTML string to a DOM document
+  var doc = parser.parseFromString(htmlString, 'text/html');
+  
+  // Get all elements with class 'MathJax'
+  var mathJaxElements = doc.querySelectorAll('.MathJax');
+
+  mathJaxElements.forEach(function(element) {
+      // Find all 'span' elements within each MathJax element
+      var spans = element.querySelectorAll('span');
+
+      spans.forEach(function(span) {
+          // If the span element has either 'MathJax_Preview' or 'MJX_Assistive_MathML', remove it
+          if (span.classList.contains('MathJax_Preview') || span.classList.contains('MJX_Assistive_MathML')) {
+              span.remove();
+          }
+      });
+
+      // Find all 'script' elements within each MathJax element and remove them
+      var scripts = element.querySelectorAll('script');
+      scripts.forEach(function(script) {
+          script.remove();
+      });
+  });
+
+  var img = doc.querySelector('img');
+  if (img) {
+    var srcParts = img.src.split('/');
+    var lastTwoSections = srcParts.slice(-2).join('/');
+    img.src = 'http://192.168.6.80/q/' + lastTwoSections;
+  }
+
+  // Serialize the cleaned DOM document back to an HTML string
+  return doc.body.innerHTML;
+}
+
+
+
+
 export function encodeObjectToHashedQueryString(obj:any) {
   const qs = queryString.stringify(obj);
   const hashedQueryString = CryptoJS.AES.encrypt(qs, 'your-secret-key').toString();
