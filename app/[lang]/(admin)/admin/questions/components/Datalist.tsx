@@ -15,13 +15,16 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
+
+import { ToggleGroupItem } from "@/components/ui/toggle-group";
+
 import useAddEditOwnerModal from "@/app/[lang]/components/modals/AddEditOwnerModal";
 import useDeleteOwnerModal from "@/app/[lang]/components/modals/DeleteOwnerModal";
 import { z } from "zod";
 import { Ownerschema } from "@/lib/schemas";
 import { toast } from "sonner";
 import { rejects } from "assert";
-import { PlusCircle } from "lucide-react";
+import { Globe2Icon, PlusCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth/core/types";
 import { AddEditOwnerModal } from "@/app/[lang]/components/modals/AddEditOwnerModal";
@@ -37,6 +40,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ToggleGroup } from "@/components/ui/toggle-group";
+import { FacetedFilter } from "../../stores/components/faceted-filter";
 
 type Props = {};
 
@@ -63,6 +68,9 @@ export default function Datalist({
   const [cat3, setCat3] = React.useState([]);
   const [cat4, setCat4] = React.useState([]);
 
+  const [dificulty, setDificulty] = React.useState<string[]>([]);
+  const [qtype, setQtype] = React.useState<string[]>([]);
+
   const [cat1Val, setCat1Val] = React.useState("");
   const [cat2Val, setCat2Val] = React.useState("");
   const [cat3Val, setCat3Val] = React.useState("");
@@ -84,18 +92,31 @@ export default function Datalist({
 
       let cat3_ = "";
       if (cat3Val !== "") cat3_ = ` and  cat3=N'${cat3Val}' `;
+
+      let _diff = "";
+      if (dificulty.length !== 0)
+        _diff = ` and  daraje in (${dificulty
+          .map((item) => `N' ${item} '`)
+          .join(",")}) `;
+
+      let _qtype = "";
+      if (qtype.length !== 0)
+        _qtype = ` and  noe in (${qtype
+          .map((item) => `N' ${item} '`)
+          .join(",")}) `;
+
       console.log(
-        `SELECT top 40 * FROM q where ${maghta} ${cat1_} ${cat2_} ${cat3_}`
+        `SELECT top 40 * FROM q where ${maghta} ${cat1_} ${cat2_} ${cat3_} ${_diff} ${_qtype}`
       );
 
       const result = await fetchQueryResult(
-        `SELECT top 40 * FROM q where ${maghta} ${cat1_}${cat2_} ${cat3_} `
+        `SELECT top 40 * FROM q where ${maghta} ${cat1_}${cat2_} ${cat3_} ${_diff} ${_qtype}`
       );
       console.log(result);
       setData(result);
     }
     fetchData();
-  }, [value, cat1Val, cat2Val, cat3Val]);
+  }, [value, cat1Val, cat2Val, cat3Val, dificulty, qtype]);
 
   useEffect(() => {
     async function fetchCat1() {
@@ -265,6 +286,14 @@ export default function Datalist({
     }, 100);
   };
 
+  const handlesetQtype = (type: string, e: string[]) => {
+    setQtype(e);
+  };
+
+  const handlesetdifficulty = (type: string, e: string[]) => {
+    setDificulty(e);
+  };
+
   const handleFileClick = (rowData: any, id: any) => {
     const newdata = rowData.Doc_files?.find((doc: any) => doc.id === id) ?? {};
     const myObject = {
@@ -318,6 +347,18 @@ export default function Datalist({
     });
   };
 
+  const [selected, setSelected] = useState([]);
+
+  const handleToggle = (value: any) => {
+    setSelected((prev: any) => {
+      if (prev.includes(value)) {
+        return prev.filter((item: any) => item !== value);
+      } else {
+        return [...prev, value];
+      }
+    });
+  };
+
   //console.log(owner);
   return (
     <div>
@@ -335,7 +376,7 @@ export default function Datalist({
         </div>
 
         <div className="flex flex-1 flex-row gap-2 justify-start items-center flex-wrap">
-          <button onClick={handleFetchData}>Fetch Data</button>
+          {/* <button onClick={handleFetchData}>Fetch Data</button> */}
           <DebouncedInput
             value={globalFilter ?? ""}
             onChange={(value: string | number) => {
@@ -439,18 +480,26 @@ export default function Datalist({
             </SelectContent>
           </Select>
 
-          {/* <div>
-            <ToggleGroup
-              type="multiple"
-              value={selected}
-              onChange={handleToggle}
-            >
-              <ToggleButton value="option1">Option 1</ToggleButton>
-              <ToggleButton value="option2">Option 2</ToggleButton>
-              <ToggleButton value="option3">Option 3</ToggleButton>
-            </ToggleGroup>
-            <div>Enabled buttons: {JSON.stringify(selected)}</div>
-          </div> */}
+          <FacetedFilter
+            filterOption="nov"
+            title="درجه سختی"
+            options={[
+              { label: "آسان", value: "آسان" },
+              { label: "خیلی دشوار", value: "خیلی دشوار" },
+              { label: "دشوار", value: "دشوار" },
+              { label: "متوسط", value: "متوسط" },
+            ]}
+            onChange={(e) => handlesetdifficulty("nov", e)}
+          ></FacetedFilter>
+          <FacetedFilter
+            filterOption="nov"
+            title="نوع سوال"
+            options={[
+              { label: "تستی", value: "تستی" },
+              { label: "تشریحی", value: "تشریحی" },
+            ]}
+            onChange={(e) => handlesetQtype("nov", e)}
+          ></FacetedFilter>
         </div>
       </div>
       {canAction.add && pelak?.pelak != "all" ? (
@@ -470,7 +519,20 @@ export default function Datalist({
           <MathJaxContext config={mathJaxConfig}>
             <DataTable
               showPrint={false}
-              hiddenCol={{}}
+              hiddenCol={{
+                g1: false,
+                g2: false,
+                cat1: false,
+                noe: false,
+                id: false,
+                g3: false,
+                g4: false,
+                cat2: false,
+                cat3: false,
+                cat4: false,
+                daraje: false,
+                sahih: false,
+              }}
               columns={columns}
               data={data}
               onPrintClick={handlePrintClick}

@@ -96,17 +96,17 @@ export const columns: ColumnDef<any>[] = [
   // },
   {
     accessorKey: "id",
-    id: "کد",
+    id: "id",
     cell: ({ row }) => {
       return (
         <Badge className="rounded-lg bordercolor font-bold" variant="outline">
-          {row.getValue("کد")}
+          {row.getValue("id")}
         </Badge>
       );
     },
 
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="کد" />
+      <DataTableColumnHeader column={column} title="id" />
     ),
   },
 
@@ -154,10 +154,37 @@ export const columns: ColumnDef<any>[] = [
     //   return value.includes(row.getValue(id));
     // },
   },
-
+  {
+    accessorKey: "cat2",
+    id: "cat2",
+    cell: ({ row }) => {
+      return <div></div>;
+    },
+  },
+  {
+    accessorKey: "cat3",
+    id: "cat3",
+    cell: ({ row }) => {
+      return <div></div>;
+    },
+  },
+  {
+    accessorKey: "cat4",
+    id: "cat4",
+    cell: ({ row }) => {
+      return <div></div>;
+    },
+  },
   {
     accessorKey: "g3",
     id: "g3",
+    cell: ({ row }) => {
+      return <div></div>;
+    },
+  },
+  {
+    accessorKey: "sahih",
+    id: "sahih",
     cell: ({ row }) => {
       return <div></div>;
     },
@@ -172,6 +199,21 @@ export const columns: ColumnDef<any>[] = [
   },
 
   {
+    accessorKey: "noe",
+    id: "noe",
+    cell: ({ row }) => {
+      return <div></div>;
+    },
+  },
+  {
+    accessorKey: "daraje",
+    id: "daraje",
+    cell: ({ row }) => {
+      return <div></div>;
+    },
+  },
+
+  {
     accessorKey: "soal",
     id: "soal",
     cell: ({ row }) => {
@@ -179,6 +221,26 @@ export const columns: ColumnDef<any>[] = [
         // <div className="rounded-sm" variant="secondary">
         <MathJax>
           <div className="flex flex-col gap-2">
+            <div className="border flex justify-start pl-2 pr-2 items-center  w-full -mt-2 h-10 border-t-0 rounded-br-xl bg-gray-50 rounded-bl-xl">
+              <p className="font-light text-[11px] text-blue-400">
+                {row.getValue("cat1") +
+                  (row.getValue("cat2") !== "" ? ">" : "") +
+                  row.getValue("cat2") +
+                  (row.getValue("cat3") !== "" ? ">" : "") +
+                  row.getValue("cat3") +
+                  (row.getValue("cat4") !== "" ? ">" : "") +
+                  row.getValue("cat4") +
+                  (row.getValue("cat5") !== "" ? ">" : "")}
+              </p>
+              <div className="mr-auto flex gap-2">
+                <Badge className="rounded-sm" variant="secondary">
+                  {row.getValue("noe")}
+                </Badge>
+                <Badge className="rounded-sm" variant="secondary">
+                  {row.getValue("daraje")}
+                </Badge>
+              </div>
+            </div>
             <div style={{ textAlign: "right" }}>
               <div
                 className="font-bold"
@@ -188,51 +250,78 @@ export const columns: ColumnDef<any>[] = [
                 }}
               ></div>
             </div>
-            <div className="flex flex-row justify-center items-center gap-2  ">
-              <div className="border rounded-lg p-2 flex flex-1 justify-center items-center ">
-                <div style={{ textAlign: "right" }}>
-                  <div
-                    style={{ direction: "ltr" }}
-                    dangerouslySetInnerHTML={{
-                      __html: removeMathJaxHTMLContent(row.getValue("g1")),
-                    }}
-                  ></div>
+            {row.getValue("noe") === " تستی " && (
+              <div className="flex flex-row justify-center items-center gap-2  ">
+                <div
+                  className={`border rounded-lg p-2 flex flex-1 justify-center items-center ${
+                    row.getValue("sahih") === "1"
+                      ? " border-green-300 border-1 bg-green-50"
+                      : " border-gray-300"
+                  }`}
+                >
+                  <div style={{ textAlign: "right" }}>
+                    <div
+                      style={{ direction: "ltr" }}
+                      dangerouslySetInnerHTML={{
+                        __html: removeMathJaxHTMLContent(row.getValue("g1")),
+                      }}
+                    ></div>
+                    {row.getValue("noe")}
+                  </div>
                 </div>
-              </div>
 
-              <div className="border rounded-lg p-2 flex flex-1 justify-center items-center">
-                <div style={{ textAlign: "right" }}>
-                  <div
-                    style={{ direction: "ltr" }}
-                    dangerouslySetInnerHTML={{
-                      __html: removeMathJaxHTMLContent(row.getValue("g2")),
-                    }}
-                  ></div>
+                <div
+                  className={`border rounded-lg p-2 flex flex-1 justify-center items-center ${
+                    row.getValue("sahih") === "2"
+                      ? " border-green-300 border-1 bg-green-50"
+                      : " border-gray-300"
+                  }`}
+                >
+                  <div style={{ textAlign: "right" }}>
+                    <div
+                      style={{ direction: "ltr" }}
+                      dangerouslySetInnerHTML={{
+                        __html: removeMathJaxHTMLContent(row.getValue("g2")),
+                      }}
+                    ></div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="border rounded-lg p-2 flex flex-1 justify-center items-center">
-                <div style={{ textAlign: "right" }}>
-                  <div
-                    style={{ direction: "ltr" }}
-                    dangerouslySetInnerHTML={{
-                      __html: removeMathJaxHTMLContent(row.getValue("g3")),
-                    }}
-                  ></div>
+                <div
+                  className={`border rounded-lg p-2 flex flex-1 justify-center items-center ${
+                    row.getValue("sahih") === "3"
+                      ? " border-green-300 border-1 bg-green-50"
+                      : " border-gray-300"
+                  }`}
+                >
+                  <div style={{ textAlign: "right" }}>
+                    <div
+                      style={{ direction: "ltr" }}
+                      dangerouslySetInnerHTML={{
+                        __html: removeMathJaxHTMLContent(row.getValue("g3")),
+                      }}
+                    ></div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="border rounded-lg p-2 flex flex-1 justify-center items-center">
-                <div style={{ textAlign: "right" }}>
-                  <div
-                    style={{ direction: "ltr" }}
-                    dangerouslySetInnerHTML={{
-                      __html: removeMathJaxHTMLContent(row.getValue("g4")),
-                    }}
-                  ></div>
+                <div
+                  className={`border rounded-lg p-2 flex flex-1 justify-center items-center ${
+                    row.getValue("sahih") === "4"
+                      ? " border-green-300 border-1 bg-green-50"
+                      : " border-gray-300"
+                  }`}
+                >
+                  <div style={{ textAlign: "right" }}>
+                    <div
+                      style={{ direction: "ltr" }}
+                      dangerouslySetInnerHTML={{
+                        __html: removeMathJaxHTMLContent(row.getValue("g4")),
+                      }}
+                    ></div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </MathJax>
       );
